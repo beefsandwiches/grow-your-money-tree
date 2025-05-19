@@ -8,8 +8,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: url('https://i.imgur.com/Zz7k9kb.png') no-repeat center center fixed;
-            background-size: cover;
+            background: url('https://i.imgur.com/Ef5TzvB.jpg') no-repeat center center fixed;
+            background-size: cover; background-attachment: fixed;
             color: #333;
             padding: 20px;
         }
@@ -41,16 +41,16 @@
         <label>Yearly Top-up (£): <input type="number" id="topup" value="0"></label>
         <label>Interest Rate (%): <input type="number" id="rate" value="5" step="0.1"></label>
         <button onclick="calculate()">Grow Tree</button>
-        <h2>Total: <span id="total">£0.00</span></h2>
-        <p>Total Invested: <span id="invested">£0.00</span></p>
-        <p>Profit: <span id="profit">£0.00</span></p>
+        <h2>Total: <span id="total">£0</span></h2>
+        <p>Total Invested: <span id="invested">£0</span></p>
+        <p>Profit: <span id="profit">£0</span></p>
         <p>Return: <span id="return">0%</span></p>
         <canvas id="chart"></canvas>
     </div>
 
     <script>
         function formatCurrency(value) {
-            return parseFloat(value).toLocaleString('en-UK', {
+            return Math.round(value).toLocaleString('en-UK', {
                 style: 'currency',
                 currency: 'GBP',
                 minimumFractionDigits: 0,
