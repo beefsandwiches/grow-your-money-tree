@@ -1,0 +1,125 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grow Your Money Tree</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://i.imgur.com/Zz7k9kb.png') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
+            padding: 20px;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        label, input {
+            display: block;
+            margin: 10px 0;
+        }
+        canvas {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Grow Your Money Tree 🌳</h1>
+        <label>Your Age: <input type="number" id="age" value="12"></label>
+        <label>Years to Grow: <input type="number" id="years" value="48"></label>
+        <label>Initial Investment (£): <input type="number" id="initial" value="100"></label>
+        <label>Yearly Top-up (£): <input type="number" id="topup" value="0"></label>
+        <label>Interest Rate (%): <input type="number" id="rate" value="5" step="0.1"></label>
+        <button onclick="calculate()">Grow Tree</button>
+        <h2>Total: <span id="total">£0.00</span></h2>
+        <p>Total Invested: <span id="invested">£0.00</span></p>
+        <p>Profit: <span id="profit">£0.00</span></p>
+        <p>Return: <span id="return">0%</span></p>
+        <canvas id="chart"></canvas>
+    </div>
+
+    <script>
+        function formatCurrency(value) {
+            return parseFloat(value).toLocaleString('en-UK', {
+                style: 'currency',
+                currency: 'GBP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+        }
+
+        function calculate() {
+            const age = parseInt(document.getElementById('age').value);
+            const years = parseInt(document.getElementById('years').value);
+            const initial = parseFloat(document.getElementById('initial').value);
+            const topup = parseFloat(document.getElementById('topup').value);
+            const rate = parseFloat(document.getElementById('rate').value) / 100;
+
+            let balance = initial;
+            let totalInvested = initial;
+            let data = [balance.toFixed(2)];
+            let labels = [age];
+
+            for (let i = 1; i <= years; i++) {
+                balance *= (1 + rate);
+                balance += topup;
+                totalInvested += topup;
+                data.push(balance.toFixed(2));
+                labels.push(age + i);
+            }
+
+            const profit = balance - totalInvested;
+            const returnPercent = (profit / totalInvested) * 100;
+
+            document.getElementById('total').textContent = formatCurrency(balance);
+            document.getElementById('invested').textContent = formatCurrency(totalInvested);
+            document.getElementById('profit').textContent = formatCurrency(profit);
+            document.getElementById('return').textContent = Math.round(returnPercent) + '%';
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            if (window.chart) window.chart.destroy();
+            window.chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Value of Investment (£)',
+                        data: data,
+                        borderColor: 'green',
+                        backgroundColor: 'lightgreen',
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Age (Years)'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '£ Value'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
